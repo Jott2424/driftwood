@@ -80,6 +80,37 @@ Static addresses, kept here as the source of truth.
 | 10.10.0.19 | seaweedfs | object storage for avatars and attachments | planned |
 | 10.10.0.200 | template | temporary address for the cloud-init template | planned |
 
+## Data layout on the VMs
+
+Every service on a VM keeps its files under one root, so I can find anything
+with `cd /srv/driftwood/<service>`. Containers use **bind mounts** to these
+folders, never named volumes, matching how my `selfhosted` stacks work. The data
+is on the VM's own local disk, not NFS.
+
+```
+/srv/driftwood/
+├── postgres/
+│   ├── compose.yaml
+│   ├── .env          secrets, mode 600, owned by root
+│   ├── data/         database files
+│   ├── config/
+│   └── logs/
+├── vault/
+├── seaweedfs/
+└── nats/
+```
+
+- Each VM only has the folders for the services it runs.
+- Services written in Go keep no data, so they only need `compose.yaml` and `.env`.
+- The compose files take the data path from a variable (for example
+  `POSTGRES_DATA=/srv/driftwood/postgres/data`). Left unset on my Windows laptop,
+  they fall back to a named volume, because Postgres on a Windows folder has
+  permission problems. That fallback is for local development only.
+- The data folder must be owned by the user the container runs as. Postgres runs
+  as user ID 999, so run `chown 999:999 /srv/driftwood/postgres/data`.
+- The cloud-init template or Terraform setup creates `/srv/driftwood` on each new
+  VM so they all start the same way (milestones 6 and 7).
+
 ## Reaching the VMs
 
 - [ ] Gateway VM (`10.10.0.14`) as the single web entry point, with the host forwarding 80/443 to it

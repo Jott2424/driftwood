@@ -8,7 +8,7 @@ built and proven before it gets its own VM.
 
 - [x] 1. Install Go and run a first program
 - [x] 2. A small web server with a `/health` endpoint, and a first unit test
-- [ ] 3. Postgres in Docker Compose, with Go connecting through `pgx`
+- [x] 3. Postgres in Docker Compose, with Go connecting through `pgx`
 - [ ] 4. A first database table, created with `goose` migrations
 - [ ] 5. CI on GitHub that runs `go vet`, the tests, and the build, then require it in the `main` ruleset
 
