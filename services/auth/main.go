@@ -27,6 +27,11 @@ func main() {
 	}
 	defer pool.Close()
 
+	// Bring the database structure up to date before serving any requests.
+	if err := runMigrations(context.Background(), pool); err != nil {
+		log.Fatalf("migrate database: %v", err)
+	}
+
 	// The mux (router) maps a method and path to a handler.
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /health", healthHandler)
