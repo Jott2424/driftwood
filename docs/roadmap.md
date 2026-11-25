@@ -6,7 +6,7 @@ built and proven before it gets its own VM.
 
 ## Phase 0: Go basics and local setup
 
-- [ ] 1. Install Go and run a first program
+- [x] 1. Install Go and run a first program
 - [ ] 2. A small web server with a `/health` endpoint, and a first unit test
 - [ ] 3. Postgres in Docker Compose, with Go connecting through `pgx`
 - [ ] 4. A first database table, created with `goose` migrations
