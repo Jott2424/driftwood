@@ -1,0 +1,25 @@
+# Local development environment. Start it with:  docker compose up -d
+# These credentials are for local development only.
+services:
+  postgres:
+    image: postgres:17
+    environment:
+      POSTGRES_USER: driftwood
+      POSTGRES_PASSWORD: driftwood_dev
+      POSTGRES_DB: auth
+    ports:
+      # Bound to localhost only, so nothing else on the network can reach it.
+      - "127.0.0.1:5432:5432"
+    volumes:
+      # Where the database files live. On a VM, set POSTGRES_DATA to
+      # /srv/driftwood/postgres/data so Docker bind mounts that folder.
+      # Unset (local development), Docker uses a named volume instead.
+      - ${POSTGRES_DATA:-postgres-data}:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U driftwood -d auth"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  postgres-data:

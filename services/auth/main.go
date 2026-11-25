@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"log"
 	"net/http"
 	"os"
@@ -14,9 +15,22 @@ func main() {
 		port = "8080"
 	}
 
+	// The database address holds a password, so it has no default in the code.
+	dbURL := os.Getenv("DATABASE_URL")
+	if dbURL == "" {
+		log.Fatal("DATABASE_URL is not set")
+	}
+
+	pool, err := connectDB(context.Background(), dbURL)
+	if err != nil {
+		log.Fatalf("connect to database: %v", err)
+	}
+	defer pool.Close()
+
 	// The mux (router) maps a method and path to a handler.
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /health", healthHandler)
+	mux.HandleFunc("GET /ready", readyHandler(pool))
 
 	server := &http.Server{
 		Addr:              ":" + port,
@@ -26,6 +40,7 @@ func main() {
 
 	log.Printf("auth listening on :%s", port)
 	// ListenAndServe blocks until the server stops. It always returns an error,
-	// so if we get here, something went wrong.
+	// so if we get here, something went wrong. (log.Fatal skips the deferred
+	// pool.Close, which is fine here because the process is exiting anyway.)
 	log.Fatal(server.ListenAndServe())
 }
