@@ -22,6 +22,17 @@ go run .
 | `GET /health` | The process is alive. |
 | `GET /ready` | The service can reach its database (503 if not). |
 
+## Database migrations
+
+The SQL files in `migrations/` are compiled into the program and applied
+automatically at startup. goose records which ones have run in a table called
+`goose_db_version`, so each runs once.
+
+To change the database structure, add a new numbered file, like
+`migrations/00002_add_something.sql`, with a `-- +goose Up` section and a
+`-- +goose Down` section that undoes it. Never edit a migration that has already
+been applied somewhere. Add a new one instead.
+
 ## Tests
 
 ```
