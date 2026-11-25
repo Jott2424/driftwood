@@ -12,7 +12,8 @@ Internet ── Router ── vmbr0 (LAN, physical NIC)
                           │
                       vmbr1 (internal only, 10.10.0.0/24)
                           │
-              api · postgres · broker · loadgen · ...
+   gateway · auth · chat · realtime · web · postgres · nats ·
+          vault · seaweedfs · loadgen
 ```
 
 - `vmbr0`: the default bridge, attached to the physical NIC and the LAN.
@@ -48,7 +49,7 @@ iface vmbr1 inet static
 ## First VM and template
 
 - [ ] Create a test VM (Debian or Ubuntu server) with its NIC on `vmbr1`
-- [ ] Set static IP `10.10.0.10/24`, gateway `10.10.0.1`, DNS `1.1.1.1`
+- [ ] Set a temporary static IP `10.10.0.200/24`, gateway `10.10.0.1`, DNS `1.1.1.1` (the template keeps this range so it never clashes with a real service address)
 - [ ] `ping 10.10.0.1` works (host)
 - [ ] `ping 1.1.1.1` works (NAT to the internet)
 - [ ] `ping google.com` works (DNS)
@@ -63,15 +64,21 @@ Static addresses, kept here as the source of truth.
 | Address | Name | Purpose | Status |
 |---|---|---|---|
 | 10.10.0.1 | proxmox | host, gateway, NAT | done |
-| 10.10.0.10 | api | Go API and WebSocket server | planned |
-| 10.10.0.11 | postgres | database | planned |
-| 10.10.0.12 | broker | Redis or NATS, later a message broker | planned |
+| 10.10.0.10 | auth | accounts, login, tokens | planned |
+| 10.10.0.11 | postgres | database, one database per service | planned |
+| 10.10.0.12 | broker | NATS | planned |
 | 10.10.0.13 | loadgen | bot accounts and stress tests | planned |
-| 10.10.0.14 | proxy | reverse proxy, the single entry point | planned |
+| 10.10.0.14 | gateway | API gateway, the single entry point | planned |
+| 10.10.0.15 | vault | credentials and certificate management | planned |
+| 10.10.0.16 | chat | boards, groups, DMs, message history | planned |
+| 10.10.0.17 | realtime | WebSocket connections, presence, typing | planned |
+| 10.10.0.18 | web | React client | planned |
+| 10.10.0.19 | seaweedfs | object storage for avatars and attachments | planned |
+| 10.10.0.200 | template | temporary address for the cloud-init template | planned |
 
 ## Reaching the VMs
 
-- [ ] Reverse proxy VM as the single web entry point, with the host forwarding 80/443 to it
+- [ ] Gateway VM (`10.10.0.14`) as the single web entry point, with the host forwarding 80/443 to it
 - [ ] Admin access (SSH, Grafana, Postgres) through a static route on my laptop for `10.10.0.0/24` via the Proxmox host, or Tailscale
 - [ ] Do not forward database or broker ports to the LAN
 - [ ] Name resolution: `/etc/hosts` entries on each VM, a small DNS server later
