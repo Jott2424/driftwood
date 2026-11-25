@@ -56,6 +56,10 @@ iface vmbr1 inet static
 - [ ] Install Docker and add my SSH key
 - [ ] Convert it to a cloud-init template so new VMs are quick to clone
 - [ ] Clone a second VM and confirm VM-to-VM connectivity
+- [ ] Install the QEMU guest agent in the template (Terraform waits for it)
+
+From milestone 7, the service VMs are created by Terraform from this template,
+not by hand. See [roadmap.md](roadmap.md).
 
 ## Address plan
 

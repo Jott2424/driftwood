@@ -88,7 +88,7 @@ Existing open source, configured and not rebuilt:
 - **SeaweedFS** for object storage (avatars and attachments), through its S3 API
 - **Docker Compose** for the local environment
 - **Proxmox VMs** on an isolated internal network, so stress-test traffic stays
-  off the home router
+  off the home router, created with **Terraform**
 - Later: Mailpit for email verification, TOTP, Prometheus and Grafana
 
 ## Layout
@@ -122,7 +122,7 @@ The full list of session-sized milestones is in [docs/roadmap.md](docs/roadmap.m
 - [x] Pick a concrete app idea: a realtime chat platform
 - [x] Proxmox internal network (`vmbr1`) with NAT; see [docs/infrastructure.md](docs/infrastructure.md)
 - [ ] **Phase 0:** Go basics and local setup (Go, a small server, Postgres, migrations, CI)
-- [ ] **Phase 1:** Proxmox base (VM template, Postgres VM)
+- [ ] **Phase 1:** Proxmox base (VM template, Terraform for the VMs, Postgres VM)
 - [ ] **Phase 2:** auth service
 - [ ] **Phase 3:** chat service
 - [ ] **Phase 4:** gateway
